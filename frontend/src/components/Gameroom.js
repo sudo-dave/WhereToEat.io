@@ -9,6 +9,7 @@ const Gameroom = () => {
   if (id === "0000") {
     return <Room solo />;
   }
+
   const { connected } = FetchRoom("/room?id=" + id);
 
   if (connected) return <Room />;
