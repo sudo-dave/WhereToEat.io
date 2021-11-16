@@ -12,7 +12,7 @@ const Gameroom = () => {
 
   const { connected } = FetchRoom("/room?id=" + id);
 
-  if (connected) return <Room />;
+  if (connected) return <Room roomID={id} />;
   return <RoomNotFound />;
 };
 export default Gameroom;

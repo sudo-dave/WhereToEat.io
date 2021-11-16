@@ -1,7 +1,10 @@
 import { useState } from "react";
+import useInterval from "../api/useInterval";
 
 const Room = (props) => {
   const [choices, setChoices] = useState([]);
+
+  const [isRunning, setIsRunning] = useState(false);
 
   const [resOne, setResOne] = useState("");
   const [resTwo, setResTwo] = useState("");
@@ -9,6 +12,31 @@ const Room = (props) => {
   const [restFour, setRestFour] = useState("");
 
   const [option, setOption] = useState(null);
+
+  useInterval(
+    () => {
+      const req = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ roomID: props.roomID }),
+      };
+      fetch("/getResults", req)
+        .then((res) => {
+          if (res.ok) {
+            return res.text();
+          }
+          return new Error("NOT fully submited yet");
+        })
+        .then((data) => {
+          console.log(data);
+          setIsRunning(!isRunning);
+        })
+        .catch((e) => console.log(e));
+    },
+    isRunning ? 3000 : null
+  );
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -26,6 +54,24 @@ const Room = (props) => {
       console.log(total[randNum]);
       // setOption(choices[randNum]);
     } else {
+      const req = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ roomID: props.roomID, restaurants: total }),
+      };
+      fetch("/setResults", req)
+        .then((res) => {
+          if (res.ok) {
+            return res.text();
+          }
+          return new Error("NOT good response status");
+        })
+        .then((data) => console.log(data))
+        .catch((e) => console.log(e));
+
+      setIsRunning(!isRunning);
     }
   };
 
