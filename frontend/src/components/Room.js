@@ -27,11 +27,14 @@ const Room = (props) => {
           if (res.ok) {
             return res.text();
           }
-          return new Error("NOT fully submited yet");
+          throw new Error("NOT fully submited yet");
         })
         .then((data) => {
+          console.log("***");
+
           console.log(data);
           setIsRunning(!isRunning);
+          console.log("Stoped the running");
         })
         .catch((e) => console.log(e));
     },
@@ -66,7 +69,7 @@ const Room = (props) => {
           if (res.ok) {
             return res.text();
           }
-          return new Error("NOT good response status");
+          throw new Error("NOT good response status");
         })
         .then((data) => console.log(data))
         .catch((e) => console.log(e));
@@ -75,11 +78,11 @@ const Room = (props) => {
     }
   };
 
-  const Result = () => {
-    if (option) {
-      return <h1> Is {option}True</h1>;
-    }
-  };
+  // const Result = () => {
+  //   if (option) {
+  //     return <h1> Is {option}True</h1>;
+  //   }
+  // };
   return (
     <form onSubmit={handleClick}>
       <label>
@@ -106,7 +109,7 @@ const Room = (props) => {
         onChange={(e) => setRestFour(e.target.value)}
       />
       <button>Random Food Place</button>
-      {Result()}
+      {/* {Result()} */}
     </form>
   );
 };
