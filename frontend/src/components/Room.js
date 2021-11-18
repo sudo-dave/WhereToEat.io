@@ -6,6 +6,7 @@ const Room = (props) => {
 
   const [isRunning, setIsRunning] = useState(false);
 
+  const [input, setInput] = useState([]);
   const [resOne, setResOne] = useState("");
   const [resTwo, setResTwo] = useState("");
   const [restThree, setResThree] = useState("");
@@ -83,6 +84,7 @@ const Room = (props) => {
   //     return <h1> Is {option}True</h1>;
   //   }
   // };
+
   return (
     <form onSubmit={handleClick}>
       <label>

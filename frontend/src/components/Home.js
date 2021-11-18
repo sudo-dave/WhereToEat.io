@@ -1,30 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+// import CreateRoom from "../api/CreateRoom";
 const Home = () => {
   const [size, setSize] = useState(1);
+
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (Number(size) === 1) navigate("/room?id=0000");
     else {
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append("size", size);
 
-      fetch("/generate-url", { method: "POST", body: formData })
-        .then((res) => {
+      const PostData = async () => {
+        try {
+          const res = await fetch("/generate-url", {
+            method: "POST",
+            body: formData,
+          });
           if (!res.ok) {
-            throw Error("Could not fetch the data");
+            throw new Error("Bad INPUT");
           }
-          return res.text();
-        })
-        .then((data) => {
-          console.log("the url is " + data);
-          navigate("/room?id=" + data);
-        })
-        .catch((e) => {
-          console.log("errrrroro " + e);
-        });
+          const url = await res.text();
+          console.log(url);
+          navigate("/room?id=" + url);
+        } catch (e) {
+          console.log("Error is " + e);
+        }
+      };
+      PostData();
     }
   };
   return (
