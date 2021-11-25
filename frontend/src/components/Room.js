@@ -2,7 +2,13 @@ import { useState } from "react";
 import useInterval from "../api/useInterval";
 
 const Room = (props) => {
-  const [choices, setChoices] = useState([]);
+  const [randRestaurants, setrRandRestaurants] = useState([
+    "aaa",
+    "bbb",
+    "ccc",
+    "ddd",
+    "eee",
+  ]);
 
   const [isRunning, setIsRunning] = useState(false);
 
@@ -42,7 +48,8 @@ const Room = (props) => {
     isRunning ? 3000 : null
   );
 
-  const handleClick = (e) => {
+  const handleSubmit = (e) => {
+    console.log("Inisde the hanlde");
     e.preventDefault();
     const total = [];
     if (resOne) total.push(resOne);
@@ -55,6 +62,7 @@ const Room = (props) => {
 
     if (props.solo) {
       const randNum = Math.floor(Math.random() * total.length);
+
       console.log(total[randNum]);
       // setOption(choices[randNum]);
     } else {
@@ -79,14 +87,12 @@ const Room = (props) => {
     }
   };
 
-  // const Result = () => {
-  //   if (option) {
-  //     return <h1> Is {option}True</h1>;
-  //   }
-  // };
+  // const randActBtn = () => {};
+
+  function randomChoice(hook) {}
 
   return (
-    <form onSubmit={handleClick}>
+    <form onSubmit={handleSubmit}>
       <label>
         <h1> ****Inside the Room********</h1>
       </label>
@@ -95,21 +101,60 @@ const Room = (props) => {
         value={resOne}
         onChange={(e) => setResOne(e.target.value)}
       />
+      <button
+        type="button"
+        onClick={() => {
+          const randNum = Math.floor(Math.random() * randRestaurants.length);
+          setResOne(randRestaurants[randNum]);
+        }}
+      >
+        Random
+      </button>
+
       <input
         type="text"
         value={resTwo}
         onChange={(e) => setResTwo(e.target.value)}
       />
+
+      <button
+        type="button"
+        onClick={() => {
+          const randNum = Math.floor(Math.random() * randRestaurants.length);
+          setResTwo(randRestaurants[randNum]);
+        }}
+      >
+        Random
+      </button>
       <input
         type="text"
         value={restThree}
         onChange={(e) => setResThree(e.target.value)}
       />
+
+      <button
+        type="button"
+        onClick={() => {
+          const randNum = Math.floor(Math.random() * randRestaurants.length);
+          setResThree(randRestaurants[randNum]);
+        }}
+      >
+        Random
+      </button>
       <input
         type="text"
         value={restFour}
         onChange={(e) => setRestFour(e.target.value)}
       />
+      <button
+        type="button"
+        onClick={() => {
+          const randNum = Math.floor(Math.random() * randRestaurants.length);
+          setRestFour(randRestaurants[randNum]);
+        }}
+      >
+        Random
+      </button>
       <button>Random Food Place</button>
       {/* {Result()} */}
     </form>
