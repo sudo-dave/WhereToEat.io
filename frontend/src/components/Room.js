@@ -11,14 +11,8 @@ const Room = (props) => {
   ]);
 
   const [isRunning, setIsRunning] = useState(false);
-
-  const [input, setInput] = useState([]);
-  const [resOne, setResOne] = useState("");
-  const [resTwo, setResTwo] = useState("");
-  const [restThree, setResThree] = useState("");
-  const [restFour, setRestFour] = useState("");
-
-  const [option, setOption] = useState(null);
+  const [winner, setWinner] = useState(null);
+  const [inputs, setInputs] = useState({});
 
   useInterval(
     () => {
@@ -37,11 +31,8 @@ const Room = (props) => {
           throw new Error("NOT fully submited yet");
         })
         .then((data) => {
-          console.log("***");
-
-          console.log(data);
+          setWinner(data);
           setIsRunning(!isRunning);
-          console.log("Stoped the running");
         })
         .catch((e) => console.log(e));
     },
@@ -49,22 +40,12 @@ const Room = (props) => {
   );
 
   const handleSubmit = (e) => {
-    console.log("Inisde the hanlde");
     e.preventDefault();
-    const total = [];
-    if (resOne) total.push(resOne);
-
-    if (resTwo) total.push(resTwo);
-
-    if (restThree) total.push(restThree);
-
-    if (restFour) total.push(restFour);
+    const total = Object.values(inputs);
 
     if (props.solo) {
       const randNum = Math.floor(Math.random() * total.length);
-
-      console.log(total[randNum]);
-      // setOption(choices[randNum]);
+      setWinner(total[randNum]);
     } else {
       const req = {
         method: "POST",
@@ -73,6 +54,7 @@ const Room = (props) => {
         },
         body: JSON.stringify({ roomID: props.roomID, restaurants: total }),
       };
+
       fetch("/setResults", req)
         .then((res) => {
           if (res.ok) {
@@ -87,76 +69,64 @@ const Room = (props) => {
     }
   };
 
-  // const randActBtn = () => {};
+  const handleInput = (e) =>
+    setInputs((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
 
-  function randomChoice(hook) {}
-
+  const handleRandomChoice = (e) =>
+    setInputs((prevState) => ({
+      ...prevState,
+      [e.target.name]:
+        randRestaurants[Math.floor(Math.random() * randRestaurants.length)],
+    }));
+  function result() {
+    if (winner) return <h1> The winner is {winner}</h1>;
+  }
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        <h1> ****Inside the Room********</h1>
-      </label>
       <input
         type="text"
-        value={resOne}
-        onChange={(e) => setResOne(e.target.value)}
+        name="restaurantOne"
+        value={inputs.restaurantOne || ""}
+        onChange={handleInput}
       />
-      <button
-        type="button"
-        onClick={() => {
-          const randNum = Math.floor(Math.random() * randRestaurants.length);
-          setResOne(randRestaurants[randNum]);
-        }}
-      >
+      <button type="button" name="restaurantOne" onClick={handleRandomChoice}>
         Random
       </button>
 
       <input
         type="text"
-        value={resTwo}
-        onChange={(e) => setResTwo(e.target.value)}
+        name="restaurantTwo"
+        value={inputs.restaurantTwo || ""}
+        onChange={handleInput}
       />
 
-      <button
-        type="button"
-        onClick={() => {
-          const randNum = Math.floor(Math.random() * randRestaurants.length);
-          setResTwo(randRestaurants[randNum]);
-        }}
-      >
+      <button type="button" name="restaurantTwo" onClick={handleRandomChoice}>
         Random
       </button>
       <input
         type="text"
-        value={restThree}
-        onChange={(e) => setResThree(e.target.value)}
+        name="restaurantThree"
+        value={inputs.restaurantThree || ""}
+        onChange={handleInput}
       />
 
-      <button
-        type="button"
-        onClick={() => {
-          const randNum = Math.floor(Math.random() * randRestaurants.length);
-          setResThree(randRestaurants[randNum]);
-        }}
-      >
+      <button type="button" name="restaurantThree" onClick={handleRandomChoice}>
         Random
       </button>
       <input
         type="text"
-        value={restFour}
-        onChange={(e) => setRestFour(e.target.value)}
+        name="restaurantFour"
+        value={inputs.restaurantFour || ""}
+        onChange={handleInput}
       />
-      <button
-        type="button"
-        onClick={() => {
-          const randNum = Math.floor(Math.random() * randRestaurants.length);
-          setRestFour(randRestaurants[randNum]);
-        }}
-      >
+      <button type="button" name="restaurantFour" onClick={handleRandomChoice}>
         Random
       </button>
       <button>Random Food Place</button>
-      {/* {Result()} */}
+      {result()}
     </form>
   );
 };
