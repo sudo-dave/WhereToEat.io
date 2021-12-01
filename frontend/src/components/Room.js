@@ -1,7 +1,9 @@
 import { useState } from "react";
+
 import useInterval from "../api/useInterval";
 
 const Room = (props) => {
+  const [disabled, setDisabled] = useState(false);
   const [randRestaurants, setrRandRestaurants] = useState([
     "aaa",
     "bbb",
@@ -40,7 +42,10 @@ const Room = (props) => {
   );
 
   const handleSubmit = (e) => {
+    // Do some input validation
     e.preventDefault();
+
+    setDisabled(!disabled);
     const total = Object.values(inputs);
 
     if (props.solo) {
@@ -82,52 +87,118 @@ const Room = (props) => {
         randRestaurants[Math.floor(Math.random() * randRestaurants.length)],
     }));
   function result() {
-    if (winner) return <h1> The winner is {winner}</h1>;
+    if (winner)
+      return (
+        // <div className="modal">
+        //   <div className="modal-box">
+        //     <p> ahdsfkajsdfk</p>
+        //   </div>
+        // </div>
+
+        <h1 className="text-center text-4xl mt-5 font-bold">
+          Winner: {winner}
+        </h1>
+      );
   }
+  function loading() {
+    if (isRunning)
+      return (
+        <>
+          <div class=" mt-5 flex justify-center items-center">
+            <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-red-800"></div>
+          </div>
+          <h1 className="text-center text-2xl mt-5 font-bold ">
+            Whating for other users
+          </h1>
+        </>
+      );
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="restaurantOne"
-        value={inputs.restaurantOne || ""}
-        onChange={handleInput}
-      />
-      <button type="button" name="restaurantOne" onClick={handleRandomChoice}>
-        Random
-      </button>
+    <>
+      <div
+        className="hero min-h-screen"
+        style={{
+          backgroundImage: "url('More_Transparent.png')",
+        }}
+      >
+        <div className="hero-overlay bg-opacity-70 bg-yellow-700"></div>
+        <div className="flex-col justify-center hero-content lg:flex-row">
+          <div className="text-center lg:text-left ">
+            <h1 className=" filter drop-shadow-2xl text-gray-50 mb-5 text-5xl font-bold bg-red-800	 p-2 rounded-lg">
+              {window.location.href}
+            </h1>
+            <p className="text-gray-50 mb-5 text-3xl bg-red-800	 p-2 rounded-lg">
+              COPY the url. SHARE with friends. SUBMIT restaurants. GET result.
+            </p>
+          </div>
+          <div className="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
+            <div className="card-body">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Restaurant One</span>
+                </label>
+                <input
+                  type="text"
+                  name="restaurantOne"
+                  value={inputs.restaurantOne || ""}
+                  onChange={handleInput}
+                  disabled={disabled}
+                  className="input input-bordered"
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Restaurant Two</span>
+                </label>
+                <input
+                  type="text"
+                  name="restaurantTwo"
+                  value={inputs.restaurantTwo || ""}
+                  onChange={handleInput}
+                  disabled={disabled}
+                  className="input input-bordered"
+                />
 
-      <input
-        type="text"
-        name="restaurantTwo"
-        value={inputs.restaurantTwo || ""}
-        onChange={handleInput}
-      />
-
-      <button type="button" name="restaurantTwo" onClick={handleRandomChoice}>
-        Random
-      </button>
-      <input
-        type="text"
-        name="restaurantThree"
-        value={inputs.restaurantThree || ""}
-        onChange={handleInput}
-      />
-
-      <button type="button" name="restaurantThree" onClick={handleRandomChoice}>
-        Random
-      </button>
-      <input
-        type="text"
-        name="restaurantFour"
-        value={inputs.restaurantFour || ""}
-        onChange={handleInput}
-      />
-      <button type="button" name="restaurantFour" onClick={handleRandomChoice}>
-        Random
-      </button>
-      <button>Random Food Place</button>
-      {result()}
-    </form>
+                <label className="label">
+                  <span className="label-text">Restaurant Three</span>
+                </label>
+                <input
+                  type="text"
+                  name="restaurantThree"
+                  value={inputs.restaurantThree || ""}
+                  onChange={handleInput}
+                  disabled={disabled}
+                  className="input input-bordered"
+                />
+                <label className="label">
+                  <span className="label-text">Restaurant Four</span>
+                </label>
+                <input
+                  type="text"
+                  name="restaurantFour"
+                  value={inputs.restaurantFour || ""}
+                  onChange={handleInput}
+                  disabled={disabled}
+                  className="input input-bordered"
+                />
+              </div>
+              <div className="form-control mt-6">
+                <input
+                  type="button"
+                  onClick={handleSubmit}
+                  value="Submit"
+                  className="btn btn-lg"
+                  disabled={disabled}
+                />
+              </div>
+              {loading()}
+              {result()}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 export default Room;

@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
-import RoomNotFound from "./RoomNotFound";
+import Error from "./Error";
 import FetchRoom from "../api/FetchRoom";
-import Room from "./Room";
+import Room from "../components/Room";
 
 const Gameroom = () => {
   const [searchParams] = useSearchParams();
@@ -13,6 +13,6 @@ const Gameroom = () => {
   const { connected } = FetchRoom("/room?id=" + id);
 
   if (connected) return <Room roomID={id} />;
-  return <RoomNotFound />;
+  return <Error msg="URL not vaild" />;
 };
 export default Gameroom;

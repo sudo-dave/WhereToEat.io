@@ -1,10 +1,8 @@
 // import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Gameroom from "./components/Gameroom";
-import Home from "./components/Home";
-const Page404 = () => {
-  return <h1> 404 NOT FOUND</h1>;
-};
+import Gameroom from "./Routes/Gameroom";
+import Home from "./Routes/Home";
+import Error from "./Routes/Error";
 
 const App = () => {
   return (
@@ -12,7 +10,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/room" element={<Gameroom />} />
-        <Route path="*" element={<Page404 />} />
+        <Route path="*" element={<Error msg="404 Page Not Found" />} />
       </Routes>
     </Router>
   );
