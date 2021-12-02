@@ -51,7 +51,7 @@ const Home = () => {
           </h1>
           <p className="mb-5 text-2xl">
             Take the hassle away of choosing on what or where to eat with this
-            web application.
+            collaborative web app.
           </p>
           <div className="flex justify-evenly">
             <form onSubmit={handleSubmit}>

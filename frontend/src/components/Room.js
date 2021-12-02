@@ -89,12 +89,6 @@ const Room = (props) => {
   function result() {
     if (winner)
       return (
-        // <div className="modal">
-        //   <div className="modal-box">
-        //     <p> ahdsfkajsdfk</p>
-        //   </div>
-        // </div>
-
         <h1 className="text-center text-4xl mt-5 font-bold">
           Winner: {winner}
         </h1>
@@ -108,10 +102,27 @@ const Room = (props) => {
             <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-red-800"></div>
           </div>
           <h1 className="text-center text-2xl mt-5 font-bold ">
-            Whating for other users
+            Waiting for other users
           </h1>
         </>
       );
+  }
+  function isOneUser() {
+    return (
+      <>
+        <h1 className="text-gray-50 mb-5 text-5xl font-bold bg-red-800 p-4 rounded-lg">
+          {props.solo ? "Where Are You Going To Eat?" : window.location.href}
+        </h1>
+        {!props.solo && (
+          <p className="text-gray-50 mb-5 text-3xl bg-red-800	 p-4 rounded-lg">
+            <div className="inline font-bold">COPY</div> the url.
+            <div className="inline font-bold"> SHARE</div> with friends.
+            <div className="inline  font-bold"> SUBMIT</div> restaurants.
+            <div className="inline font-bold"> GET</div> result.
+          </p>
+        )}
+      </>
+    );
   }
 
   return (
@@ -123,62 +134,59 @@ const Room = (props) => {
         }}
       >
         <div className="hero-overlay bg-opacity-70 bg-yellow-700"></div>
-        <div className="flex-col justify-center hero-content lg:flex-row">
-          <div className="text-center lg:text-left ">
-            <h1 className=" filter drop-shadow-2xl text-gray-50 mb-5 text-5xl font-bold bg-red-800	 p-2 rounded-lg">
-              {window.location.href}
-            </h1>
-            <p className="text-gray-50 mb-5 text-3xl bg-red-800	 p-2 rounded-lg">
-              COPY the url. SHARE with friends. SUBMIT restaurants. GET result.
-            </p>
-          </div>
+        <div className="flex-col justify-center hero-content lg:flex-row ">
+          <div className="text-center lg:text-left ">{isOneUser()}</div>
           <div className="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Restaurant One</span>
+                  <span className="label-text">Restaurant / Food One</span>
                 </label>
                 <input
                   type="text"
                   name="restaurantOne"
                   value={inputs.restaurantOne || ""}
                   onChange={handleInput}
+                  autocomplete="off"
                   disabled={disabled}
                   className="input input-bordered"
                 />
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Restaurant Two</span>
+                  <span className="label-text">Restaurant / Food Two</span>
                 </label>
                 <input
                   type="text"
                   name="restaurantTwo"
                   value={inputs.restaurantTwo || ""}
                   onChange={handleInput}
+                  autocomplete="off"
                   disabled={disabled}
                   className="input input-bordered"
                 />
 
                 <label className="label">
-                  <span className="label-text">Restaurant Three</span>
+                  <span className="label-text">Restaurant / Food Three</span>
                 </label>
                 <input
                   type="text"
                   name="restaurantThree"
                   value={inputs.restaurantThree || ""}
                   onChange={handleInput}
+                  autocomplete="off"
                   disabled={disabled}
                   className="input input-bordered"
                 />
                 <label className="label">
-                  <span className="label-text">Restaurant Four</span>
+                  <span className="label-text">Restaurant / Food Four</span>
                 </label>
                 <input
                   type="text"
                   name="restaurantFour"
                   value={inputs.restaurantFour || ""}
                   onChange={handleInput}
+                  autocomplete="off"
                   disabled={disabled}
                   className="input input-bordered"
                 />
