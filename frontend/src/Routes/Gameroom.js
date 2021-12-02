@@ -6,9 +6,8 @@ import Room from "../components/Room";
 const Gameroom = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  if (id === "0000") {
-    return <Room solo />;
-  }
+
+  if (id === "0000") return <Room solo />;
 
   const { connected } = FetchRoom("/room?id=" + id);
 

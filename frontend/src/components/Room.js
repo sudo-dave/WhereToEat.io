@@ -1,16 +1,18 @@
 import { useState } from "react";
 
 import useInterval from "../api/useInterval";
+import ResultBlock from "./ResultBlock";
+import LoadingBar from "./LoadingBar";
 
 const Room = (props) => {
   const [disabled, setDisabled] = useState(false);
-  const [randRestaurants, setrRandRestaurants] = useState([
-    "aaa",
-    "bbb",
-    "ccc",
-    "ddd",
-    "eee",
-  ]);
+  // const [randRestaurants, setrRandRestaurants] = useState([
+  //   "aaa",
+  //   "bbb",
+  //   "ccc",
+  //   "ddd",
+  //   "eee",
+  // ]);
 
   const [isRunning, setIsRunning] = useState(false);
   const [winner, setWinner] = useState(null);
@@ -80,33 +82,13 @@ const Room = (props) => {
       [e.target.name]: e.target.value,
     }));
 
-  const handleRandomChoice = (e) =>
-    setInputs((prevState) => ({
-      ...prevState,
-      [e.target.name]:
-        randRestaurants[Math.floor(Math.random() * randRestaurants.length)],
-    }));
-  function result() {
-    if (winner)
-      return (
-        <h1 className="text-center text-4xl mt-5 font-bold">
-          Winner: {winner}
-        </h1>
-      );
-  }
-  function loading() {
-    if (isRunning)
-      return (
-        <>
-          <div class=" mt-5 flex justify-center items-center">
-            <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-red-800"></div>
-          </div>
-          <h1 className="text-center text-2xl mt-5 font-bold ">
-            Waiting for other users
-          </h1>
-        </>
-      );
-  }
+  // const handleRandomChoice = (e) =>
+  //   setInputs((prevState) => ({
+  //     ...prevState,
+  //     [e.target.name]:
+  //       randRestaurants[Math.floor(Math.random() * randRestaurants.length)],
+  //   }));
+
   function isOneUser() {
     return (
       <>
@@ -200,8 +182,8 @@ const Room = (props) => {
                   disabled={disabled}
                 />
               </div>
-              {loading()}
-              {result()}
+              {isRunning && <LoadingBar />}
+              {winner && <ResultBlock winner={winner} />}
             </div>
           </div>
         </div>

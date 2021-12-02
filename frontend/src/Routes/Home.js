@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import CreateRoom from "../api/CreateRoom";
 const Home = () => {
   const [size, setSize] = useState("How Many Users?");
   const navigate = useNavigate();
