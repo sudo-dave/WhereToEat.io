@@ -9,7 +9,7 @@ const Gameroom = () => {
 
   if (id === "0000") return <Room solo />;
 
-  const { connected } = FetchRoom("/room?id=" + id);
+  const { connected } = FetchRoom("api/room?id=" + id);
 
   if (connected) return <Room roomID={id} />;
   return <Error msg="URL not vaild" />;

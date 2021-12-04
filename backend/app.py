@@ -4,18 +4,26 @@ import uuid
 
 rooms = dict()
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='../frontend/build')
+
+@app.route('/')
+def index():
+    return app.send_static_file("index.html")
 
 
-@app.route("/api", methods = ['GET'])
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
+
+@app.route("/testAPI", methods = ['GET'])
 def test():
-    return 'LOOKs good', 200
+    return 'Hello World', 200
 
 @app.route("/fastfood-names", methods = ['GET'])
 def hello_world():
     return {'foodNames': ['McDonalds' , 'Wendys', 'Carls']}
 
-@app.route("/room", methods = ['GET'])
+@app.route("/api/room", methods = ['GET'])
 def joinRoom():
     roomId = request.args.get('id')
     if not roomId:
@@ -30,9 +38,9 @@ def joinRoom():
     # rooms[roomId] = userSetSize - 1
     print(rooms)
     
-    return 'looks good', 200
+    return "Vaild Room", 200
 
-@app.route("/generate-url", methods = ['POST'])
+@app.route("/api/generate-url", methods = ['POST'])
 def generate():
     #Check route
     try:
@@ -56,7 +64,7 @@ def generate():
     return roomId, 200
 
 
-@app.route("/getResults", methods = ['POST'])
+@app.route("/api/getResults", methods = ['POST'])
 def getResutls():
     if not request.is_json:
         return 'bad Input ', 400
@@ -76,7 +84,14 @@ def getResutls():
             rooms[roomId]['currentRoomSize'] -= 1
             return randomRes, 200
         elif rooms[roomId]['currentRoomSize'] <  0:
-            return rooms[roomId]['result'], 200
+            result = rooms[roomId]['result']
+
+            if rooms[roomId]['currentRoomSize'] == ((int(rooms[roomId]['roomSize']) - 1) * -1):
+                rooms.pop(roomId)
+                return result, 200
+            
+            rooms[roomId]['currentRoomSize'] -= 1
+            return result, 200
         else:
             return 'No full yet', 400
        
@@ -86,7 +101,7 @@ def getResutls():
 
 
 
-@app.route("/setResults", methods = ['POST'])
+@app.route("/api/setResults", methods = ['POST'])
 def setResults():
     #make sure json is coorect format
     # make sure to validate the json

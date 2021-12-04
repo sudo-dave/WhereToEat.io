@@ -27,7 +27,7 @@ const Room = (props) => {
         },
         body: JSON.stringify({ roomID: props.roomID }),
       };
-      fetch("/getResults", req)
+      fetch("api/getResults", req)
         .then((res) => {
           if (res.ok) {
             return res.text();
@@ -62,7 +62,7 @@ const Room = (props) => {
         body: JSON.stringify({ roomID: props.roomID, restaurants: total }),
       };
 
-      fetch("/setResults", req)
+      fetch("api/setResults", req)
         .then((res) => {
           if (res.ok) {
             return res.text();

@@ -18,7 +18,7 @@ const Home = () => {
 
       const PostData = async () => {
         try {
-          const res = await fetch("/generate-url", {
+          const res = await fetch("api/generate-url", {
             method: "POST",
             body: formData,
           });
