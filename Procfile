@@ -1,1 +1,1 @@
-web: gunicorn app:wheretoeatio
+web: gunicorn app:app
