@@ -4,7 +4,7 @@ import uuid
 
 rooms = dict()
 
-app = Flask(__name__, static_url_path='', static_folder='../frontend/build')
+app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 
 @app.route('/')
 def index():
