@@ -1,8 +1,6 @@
-const ResultBlock = (props) => {
+const ResultBlock = ({ winner }) => {
   return (
-    <h1 className="text-center text-4xl mt-5 font-bold">
-      Winner: {props.winner}
-    </h1>
+    <h1 className="text-center text-4xl mt-5 font-bold">Winner: {winner}</h1>
   );
 };
 

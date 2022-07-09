@@ -1,23 +1,13 @@
-from flask import Flask, request
+from flask import request, Blueprint
 import random
 import uuid
 
 rooms = dict()
 
-app = Flask(__name__, static_url_path='', static_folder='frontend/build')
+api = Blueprint("api",__name__)
 
 
-@app.route('/')
-def index():
-    return app.send_static_file("index.html")
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return app.send_static_file('index.html')
-
-
-@app.route("/api/room", methods=['GET'])
+@api.route("/room", methods=['GET'])
 def joinRoom():
     roomId = request.args.get('id')
 
@@ -31,7 +21,7 @@ def joinRoom():
     return "Vaild Room", 200
 
 
-@app.route("/api/generate-url", methods=['POST'])
+@api.route("/generate-url", methods=['POST'])
 def generate():
 
     try:
@@ -53,7 +43,7 @@ def generate():
     return roomId, 200
 
 
-@app.route("/api/getResults", methods=['POST'])
+@api.route("/getResults", methods=['POST'])
 def getResutls():
     if not request.is_json:
         return 'NOT JSON ', 400
@@ -89,7 +79,7 @@ def getResutls():
     return 'Room NOT FOUND', 400
 
 
-@app.route("/api/setResults", methods=['POST'])
+@api.route("/setResults", methods=['POST'])
 def setResults():
 
     if not request.is_json:

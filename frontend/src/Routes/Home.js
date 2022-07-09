@@ -1,47 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Home = () => {
-  const [size, setSize] = useState("How Many Users?");
+  const [size, setSize] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (size === "How Many Users?") {
-      alert("Choose correct size");
+    if (!size) {
+      alert("Enter valid users");
       return;
     }
-    if (Number(size) === 1) navigate("/room?id=0000");
-    else {
-      const formData = new FormData();
-      formData.append("size", size);
 
-      const PostData = async () => {
-        try {
-          const res = await fetch("api/generate-url", {
-            method: "POST",
-            body: formData,
-          });
-          if (!res.ok) {
-            throw new Error("Bad INPUT");
-          }
-          const url = await res.text();
-          console.log(url);
-          navigate("/room?id=" + url);
-        } catch (e) {
-          console.log("Error is " + e);
-        }
-      };
-      PostData();
+    if (Number(size) === 1) {
+      navigate("/room?id=0000");
+      return;
     }
+    const formData = new FormData();
+    formData.append("size", size);
+
+    const PostData = async () => {
+      try {
+        const res = await fetch("api/generate-url", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) {
+          throw new Error("Bad INPUT");
+        }
+        const url = await res.text();
+        console.log(url);
+        navigate("/room?id=" + url);
+      } catch (e) {
+        console.log("Error is " + e);
+      }
+    };
+    PostData();
   };
   return (
-    <div
-      className="hero min-h-screen"
-      style={{
-        backgroundImage: "url('More_Transparent.png')",
-      }}
-    >
+    <div className="hero min-h-screen bg-hero">
       <div className="hero-overlay bg-opacity-70 bg-yellow-700"></div>
       <div className="text-center hero-content text-neutral-content">
         <div className="max-w-lg">
@@ -55,13 +52,13 @@ const Home = () => {
           <div className="flex justify-evenly">
             <form onSubmit={handleSubmit}>
               <select
-                value={size}
                 className="text-black select select-bordered select-lg w-full max-w-xs"
+                defaultValue={"DEFAULT"}
                 onChange={(e) => {
                   setSize(e.target.value);
                 }}
               >
-                <option value="How Many Users?" disabled>
+                <option value="DEFAULT" disabled>
                   How Many Users?
                 </option>
 

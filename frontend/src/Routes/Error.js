@@ -1,11 +1,6 @@
 const Error = (props) => {
   return (
-    <div
-      className="hero min-h-screen"
-      style={{
-        backgroundImage: "url('More_Transparent.png')",
-      }}
-    >
+    <div className="hero min-h-screen bg-hero">
       <div className="hero-overlay bg-opacity-70 bg-yellow-700"></div>
       <div className="text-center hero-content text-neutral-content">
         <div className="max-w-2xl">

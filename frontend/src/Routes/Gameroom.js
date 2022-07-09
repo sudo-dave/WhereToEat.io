@@ -11,7 +11,6 @@ const Gameroom = () => {
 
   const { connected } = FetchRoom("api/room?id=" + id);
 
-  if (connected) return <Room roomID={id} />;
-  return <Error msg="URL not vaild" />;
+  return connected ? <Room roomID={id} /> : <Error msg="URL not vaild" />;
 };
 export default Gameroom;
