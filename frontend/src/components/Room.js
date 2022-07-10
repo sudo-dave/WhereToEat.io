@@ -3,7 +3,14 @@ import { useState } from "react";
 import useInterval from "../api/useInterval";
 import ResultBlock from "./ResultBlock";
 import LoadingBar from "./LoadingBar";
+import RoomHeader from "./RoomHeader";
 
+const options = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
 const Room = (props) => {
   const [disabled, setDisabled] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -11,26 +18,17 @@ const Room = (props) => {
   const [inputs, setInputs] = useState({});
 
   useInterval(
-    () => {
-      const req = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ roomID: props.roomID }),
-      };
-      fetch("api/getResults", req)
-        .then((res) => {
-          if (res.ok) {
-            return res.text();
-          }
-          throw new Error("NOT fully submited yet");
-        })
-        .then((data) => {
-          setWinner(data);
-          setIsRunning(!isRunning);
-        })
-        .catch((e) => console.log(e));
+    async () => {
+      options["body"] = JSON.stringify({ roomID: props.roomID });
+      try {
+        const res = await fetch("api/getResults", options);
+        if (!res.ok) throw new Error("Error Fetching Data");
+        const data = res.text();
+        setWinner(data);
+        setIsRunning(!isRunning);
+      } catch (e) {
+        console.log(e);
+      }
     },
     isRunning ? 3000 : null
   );
@@ -47,24 +45,19 @@ const Room = (props) => {
       setWinner(total[randNum]);
       return;
     }
-    const req = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ roomID: props.roomID, restaurants: total }),
-    };
+    options["body"] = JSON.stringify({
+      roomID: props.roomID,
+      restaurants: total,
+    });
 
-    fetch("api/setResults", req)
-      .then((res) => {
-        if (res.ok) {
-          return res.text();
-        }
-        throw new Error("NOT good response status");
-      })
-      .then((data) => console.log(data))
-      .catch((e) => console.log(e));
-
+    (async () => {
+      try {
+        const res = await fetch("api/setResults", options);
+        if (!res.ok) throw new Error("NOT good response status");
+      } catch (e) {
+        console.log(e);
+      }
+    })();
     setIsRunning(!isRunning);
   };
 
@@ -74,30 +67,14 @@ const Room = (props) => {
       [e.target.name]: e.target.value,
     }));
 
-  function isOneUser() {
-    return (
-      <>
-        <h1 className="text-gray-50 mb-5 text-5xl font-bold bg-red-800 p-4 rounded-lg">
-          {props.solo ? "Where Are You Going To Eat?" : window.location.href}
-        </h1>
-        {!props.solo && (
-          <p className="text-gray-50 mb-5 text-3xl bg-red-800	 p-4 rounded-lg">
-            <div className="inline font-bold">COPY</div> the url.
-            <div className="inline font-bold"> SHARE</div> with friends.
-            <div className="inline  font-bold"> SUBMIT</div> restaurants.
-            <div className="inline font-bold"> GET</div> result.
-          </p>
-        )}
-      </>
-    );
-  }
-
   return (
     <>
       <div className="hero min-h-screen bg-hero">
         <div className="hero-overlay bg-opacity-70 bg-yellow-700"></div>
         <div className="flex-col justify-center hero-content lg:flex-row ">
-          <div className="text-center lg:text-left ">{isOneUser()}</div>
+          <div className="text-center lg:text-left ">
+            {<RoomHeader solo={props.solo} />}
+          </div>
           <div className="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
             <div className="card-body">
               <div className="form-control">

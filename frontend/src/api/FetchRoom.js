@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const FetchRoom = (url) => {
-  const [connected, setConnection] = useState(true);
+  const [connected, setConnection] = useState(false);
+  const [error, setError] = useState({ status: false, message: "" });
 
-  fetch(url)
-    .then((res) => {
-      if (!res.ok) {
-        throw Error("Could not check if is connected");
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Error fetching data.");
+        setConnection(true);
+      } catch (error) {
+        setError({ message: error.message });
       }
-      console.log("0909");
-      // setConnection(true);
-    })
-    .catch((e) => {
-      setConnection(false);
-      console.log("There was a error");
-    });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return { connected };
+  return { connected, error };
 };
 export default FetchRoom;

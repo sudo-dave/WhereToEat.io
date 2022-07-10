@@ -12,30 +12,25 @@ const Home = () => {
       return;
     }
 
-    if (Number(size) === 1) {
+    if (size === 1) {
       navigate("/room?id=0000");
       return;
     }
     const formData = new FormData();
     formData.append("size", size);
-
-    const PostData = async () => {
+    (async () => {
       try {
         const res = await fetch("api/generate-url", {
           method: "POST",
           body: formData,
         });
-        if (!res.ok) {
-          throw new Error("Bad INPUT");
-        }
+        if (!res.ok) throw new Error("Bad INPUT");
         const url = await res.text();
-        console.log(url);
         navigate("/room?id=" + url);
       } catch (e) {
-        console.log("Error is " + e);
+        console.log("Error is " + e.message);
       }
-    };
-    PostData();
+    })();
   };
   return (
     <div className="hero min-h-screen bg-hero">
