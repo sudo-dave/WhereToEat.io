@@ -23,7 +23,7 @@ const Room = (props) => {
       try {
         const res = await fetch("api/getResults", options);
         if (!res.ok) throw new Error("Error Fetching Data");
-        const data = res.text();
+        const data = await res.text();
         setWinner(data);
         setIsRunning(!isRunning);
       } catch (e) {

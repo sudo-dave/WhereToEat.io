@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Home = () => {
-  const [size, setSize] = useState(false);
+  const [size, setSize] = useState(0);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -11,7 +11,6 @@ const Home = () => {
       alert("Enter valid users");
       return;
     }
-
     if (size === 1) {
       navigate("/room?id=0000");
       return;
@@ -50,7 +49,7 @@ const Home = () => {
                 className="text-black select select-bordered select-lg w-full max-w-xs"
                 defaultValue={"DEFAULT"}
                 onChange={(e) => {
-                  setSize(e.target.value);
+                  setSize(parseInt(e.target.value));
                 }}
               >
                 <option value="DEFAULT" disabled>
