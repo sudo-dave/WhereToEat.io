@@ -1,35 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useSubmitUser from "../api/useSubmitUser";
 const Home = () => {
   const [size, setSize] = useState(0);
   const navigate = useNavigate();
+  const [fetchPost, response, error] = useSubmitUser("api/generate-url");
+
+  useEffect(() => {
+    if (response) navigate("/room?id=" + response);
+  }, [response, error]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!size) {
-      alert("Enter valid users");
-      return;
-    }
-    if (size === 1) {
-      navigate("/room?id=0000");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("size", size);
-    (async () => {
-      try {
-        const res = await fetch("api/generate-url", {
-          method: "POST",
-          body: formData,
-        });
-        if (!res.ok) throw new Error("Bad INPUT");
-        const url = await res.text();
-        navigate("/room?id=" + url);
-      } catch (e) {
-        console.log("Error is " + e.message);
-      }
-    })();
+    if (!size) alert("Enter valid users");
+    else if (size === 1) navigate("/room?id=0000");
+    else fetchPost(size);
   };
   return (
     <div className="hero min-h-screen bg-hero">
