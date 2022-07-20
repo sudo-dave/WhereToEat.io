@@ -8,13 +8,14 @@ const Home = () => {
 
   useEffect(() => {
     if (response) navigate("/room?id=" + response);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response, error]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!size) alert("Enter valid users");
-    else if (size === 1) navigate("/room?id=0000");
+    else if (size === 1) navigate("/solo");
     else fetchPost(size);
   };
   return (
