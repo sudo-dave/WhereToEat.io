@@ -4,7 +4,7 @@ import uuid
 
 rooms = dict()
 
-api = Blueprint("api",__name__)
+api = Blueprint("api", __name__)
 
 
 @api.route("/room", methods=['GET'])
