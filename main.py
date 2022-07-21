@@ -25,7 +25,9 @@ def init_db():
     print("nope")
     session = session_factory()
     start_data = Room("test-url", 23, 12, "test-data")
+    extra_data = Room("2test", 323, 22, "2nd-test")
     session.add(start_data)
+    session.add(extra_data)
     session.commit()
     session.close()
 

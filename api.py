@@ -14,12 +14,21 @@ api = Blueprint("api", __name__)
 @api.route("/room", methods=['GET'])
 def joinRoom():
     roomId = request.args.get('id')
+    session = session_factory()
+    res = session.query(Room.url, Room.current_size).all()
+    # return a row object not tuples -
+    # convert to dict
+    session.close()
+    rows = [dict(r) for r in res]
+    urls = [row['url'] for row in rows]
+    current_sizes = [row['current_size'] for row in rows]
+    url_current_sizes = dict(zip(urls, current_sizes))
 
     if not roomId:
         return 'No input', 400
-    if roomId not in rooms:
+    if roomId not in urls:
         return 'Room not found', 404
-    if rooms.get(roomId) == 0:
+    if url_current_sizes[roomId] == 0:
         return 'Room is full', 401
 
     return "Vaild Room", 200
@@ -38,12 +47,16 @@ def generate():
 
     roomId = str(uuid.uuid4())[:7]
 
-    while roomId in rooms:
-        roomId = str(uuid.uuid4())[:7]
+    # while roomId in rooms:
+    #     roomId = str(uuid.uuid4())[:7]
 
-    rooms[roomId] = {'roomSize': roomSize,
-                     'currentRoomSize': roomSize, 'restaurants': []}
-
+    # rooms[roomId] = {'roomSize': roomSize,
+    #                  'currentRoomSize': roomSize, 'restaurants': []}
+    session = session_factory()
+    room = Room(roomId, roomSize, 0, '@')
+    session.add(room)
+    session.commit()
+    session.close()
     return roomId, 200
 
 
