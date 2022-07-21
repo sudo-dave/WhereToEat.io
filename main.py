@@ -1,12 +1,12 @@
 from flask import Flask
 from api import api
 import os
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+from room import Room
+from base import session_factory, DB_FILENAME
+
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 app.register_blueprint(api, url_prefix="/api")
-
-DB_FILENAME = "Userdata.db"
 
 
 @app.route('/')
@@ -22,17 +22,12 @@ def not_found(e):
 def init_db():
     if os.path.isfile(DB_FILENAME):
         return
-    engine = create_engine('sqlite:///' + DB_FILENAME, echo=True)
-    meta = MetaData()
-    main = Table(
-        'main', meta,
-        Column('id', Integer, primary_key=True),
-        Column('url', String),
-        Column('max_size', Integer),
-        Column('current_size', String),
-        Column('data', String)
-    )
-    meta.create_all(engine)
+    print("nope")
+    session = session_factory()
+    start_data = Room("test-url", 23, 12, "test-data")
+    session.add(start_data)
+    session.commit()
+    session.close()
 
 
 if __name__ == '__main__':
