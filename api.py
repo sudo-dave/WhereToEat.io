@@ -4,7 +4,7 @@ import random
 import uuid
 
 from room import Room
-from base import Base
+from base import session_factory, DB_FILENAME
 
 rooms = dict()
 
