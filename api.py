@@ -1,11 +1,10 @@
-from re import A
 from flask import request, Blueprint
 import random
 import uuid
 
 from room import Room
 from base import session_factory, DB_FILENAME
-
+from sqlalchemy import update
 rooms = dict()
 
 api = Blueprint("api", __name__)
@@ -14,21 +13,21 @@ api = Blueprint("api", __name__)
 @api.route("/room", methods=['GET'])
 def joinRoom():
     roomId = request.args.get('id')
+    if len(roomId) != 7:
+        return 'Invalid room Id', 400
+
     session = session_factory()
-    res = session.query(Room.url, Room.current_size).all()
+    res = session.query(Room.current_size).where(Room.url == roomId)
+    session.close()
+
     # return a row object not tuples -
     # convert to dict
-    session.close()
-    rows = [dict(r) for r in res]
-    urls = [row['url'] for row in rows]
-    current_sizes = [row['current_size'] for row in rows]
-    url_current_sizes = dict(zip(urls, current_sizes))
+    row = [dict(r) for r in res]
 
-    if not roomId:
-        return 'No input', 400
-    if roomId not in urls:
-        return 'Room not found', 404
-    if url_current_sizes[roomId] == 0:
+    if not row:
+        return "room ID not valid", 404
+
+    if row[0]['current_size'] == 0:
         return 'Room is full', 401
 
     return "Vaild Room", 200
@@ -47,13 +46,8 @@ def generate():
 
     roomId = str(uuid.uuid4())[:7]
 
-    # while roomId in rooms:
-    #     roomId = str(uuid.uuid4())[:7]
-
-    # rooms[roomId] = {'roomSize': roomSize,
-    #                  'currentRoomSize': roomSize, 'restaurants': []}
     session = session_factory()
-    room = Room(roomId, roomSize, 0, '@')
+    room = Room(roomId, roomSize, 0, '')
     session.add(room)
     session.commit()
     session.close()
@@ -105,21 +99,30 @@ def setResults():
     content = request.get_json()
 
     restaurants = content['restaurants']
-    roomId = content['roomID']
+    roomId = str(content['roomID'])
 
-    if not len(roomId) == 7:
-        return "Not vaild roomID", 400
+    if len(roomId) != 7:
+        return 'Invalid room Id', 400
 
-    if not len(restaurants) == 4:
+    if not len(restaurants) or len(restaurants) > 4:
         return 'not correct number of resturants', 400
 
-    if roomId in rooms.keys():
-        if rooms[roomId]["currentRoomSize"] <= 0:
-            return "cant send anymore", 400
+    session = session_factory()
 
-        rooms[roomId]['restaurants'].extend(restaurants)
-        rooms[roomId]["currentRoomSize"] -= 1
-    else:
-        return 'Room not Found', 400
+    # res = session.query(Room).where(Room.url == roomId)
+    res = session.query(Room.current_size, Room.data).where(Room.url == roomId)
+    # session.close()
+
+    # return a row object not tuples -
+    # convert to dict
+    row = [dict(r) for r in res]
+    if not row:
+        return "room ID not valid", 404
+
+    if int(row[0]['current_size']) == 0:
+        return 'Room is full', 401
+
+    # res.current_size -= 1
+    # res.data = res.data+"@" + ''.join(restaurants)
 
     return "SUCCESS", 200

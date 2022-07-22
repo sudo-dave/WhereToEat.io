@@ -9,7 +9,7 @@ class Room(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String)
     max_size = Column(Integer)
-    current_size = Column(String)
+    current_size = Column(Integer)
     data = Column(String)
 
     def __init__(self, url, max_size, current_size, data) -> None:

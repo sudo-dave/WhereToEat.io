@@ -22,10 +22,9 @@ def not_found(e):
 def init_db():
     if os.path.isfile(DB_FILENAME):
         return
-    print("nope")
     session = session_factory()
-    start_data = Room("test-url", 23, 12, "test-data")
-    extra_data = Room("2test", 323, 22, "2nd-test")
+    start_data = Room("cbatest", 23, 12, "test-data")
+    extra_data = Room("abctest", 323, 0, "2nd-test")
     session.add(start_data)
     session.add(extra_data)
     session.commit()
