@@ -9,6 +9,8 @@ rooms = dict()
 
 api = Blueprint("api", __name__)
 
+DATA_ENCODE_SYMBOL = "@"
+
 
 @api.route("/room", methods=['GET'])
 def joinRoom():
@@ -106,12 +108,9 @@ def setResults():
 
     if not len(restaurants) or len(restaurants) > 4:
         return 'not correct number of resturants', 400
-
     session = session_factory()
 
-    # res = session.query(Room).where(Room.url == roomId)
     res = session.query(Room.current_size, Room.data).where(Room.url == roomId)
-    # session.close()
 
     # return a row object not tuples -
     # convert to dict
@@ -122,7 +121,10 @@ def setResults():
     if int(row[0]['current_size']) == 0:
         return 'Room is full', 401
 
-    # res.current_size -= 1
-    # res.data = res.data+"@" + ''.join(restaurants)
+    session.query(Room).where(Room.url == roomId).update(
+        {"current_size": Room.current_size - 1, Room.data:  DATA_ENCODE_SYMBOL.join(restaurants)})
+
+    session.commit()
+    session.close()
 
     return "SUCCESS", 200
