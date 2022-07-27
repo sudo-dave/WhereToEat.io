@@ -4,8 +4,6 @@ import uuid
 
 from room import Room
 from base import session_factory, DB_FILENAME
-from sqlalchemy import update
-rooms = dict()
 
 api = Blueprint("api", __name__)
 
@@ -19,7 +17,8 @@ def joinRoom():
         return 'Invalid room Id', 400
 
     session = session_factory()
-    res = session.query(Room.current_size).where(Room.url == roomId)
+    res = session.query(Room.current_size, Room.max_size).where(
+        Room.url == roomId)
     session.close()
 
     # return a row object not tuples -
@@ -28,9 +27,10 @@ def joinRoom():
 
     if not row:
         return "room ID not valid", 404
-
-    if row[0]['current_size'] == 0:
-        return 'Room is full', 401
+    print("ROOM API")
+    print(row)
+    # if row[0]['current_size'] == row[0]['max_size']:
+    #     return 'Room is full', 401
 
     return "Vaild Room", 200
 
@@ -49,7 +49,7 @@ def generate():
     roomId = str(uuid.uuid4())[:7]
 
     session = session_factory()
-    room = Room(roomId, roomSize, 0, '')
+    room = Room(roomId, roomSize, 1, '', 0)
     session.add(room)
     session.commit()
     session.close()
@@ -65,31 +65,42 @@ def getResutls():
 
     roomId = content['roomID']
 
-    if not len(roomId) == 7:
-        return "Not vaild roomID", 400
+    if len(roomId) != 7:
+        return "Invalid room Id", 400
 
-    if roomId in rooms.keys():
+    session = session_factory()
+    res = session.query(Room.current_size, Room.data,
+                        Room.max_size, Room.isDone).where(Room.url == roomId)
+    session.close()
 
-        if rooms[roomId]['currentRoomSize'] == 0:
-            randomRes = random.choice(rooms[roomId]['restaurants'])
+    # return a row object not tuples -
+    # convert to dict
+    row = [dict(r) for r in res]
 
-            rooms[roomId]['result'] = randomRes
-            rooms[roomId]['currentRoomSize'] -= 1
+    if not row:
+        return "room not found", 404
+    print(row)
+    current_size = row[0]["current_size"]
+    data = row[0]["data"]
+    max_size = row[0]["max_size"]
+    isDone = bool(row[0]["isDone"])
 
-            return randomRes, 200
-        elif rooms[roomId]['currentRoomSize'] < 0:
-            result = rooms[roomId]['result']
+    if current_size != max_size or not isDone:
+        return "All participants have not sbumite yet", 400
 
-            if rooms[roomId]['currentRoomSize'] == ((int(rooms[roomId]['roomSize']) - 1) * -1):
-                rooms.pop(roomId)
-                return result, 200
-
-            rooms[roomId]['currentRoomSize'] -= 1
-            return result, 200
-        else:
-            return 'No full yet', 400
-
-    return 'Room NOT FOUND', 400
+    updateVaules = {Room.current_size: Room.current_size - 1}
+    if current_size == max_size:
+        nonempty_data = [i for i in data.split(DATA_ENCODE_SYMBOL) if i]
+        updateVaules[Room.data] = random.choice(nonempty_data)
+        updateVaules[Room.isDone] = 1
+        ans = updateVaules[Room.data]
+    else:
+        ans = data
+    session = session_factory()
+    session.query(Room).where(Room.url == roomId).update(updateVaules)
+    session.commit()
+    session.close()
+    return ans, 200
 
 
 @api.route("/setResults", methods=['POST'])
@@ -110,7 +121,9 @@ def setResults():
         return 'not correct number of resturants', 400
     session = session_factory()
 
-    res = session.query(Room.current_size, Room.data).where(Room.url == roomId)
+    res = session.query(Room.current_size, Room.data,
+                        Room.max_size).where(Room.url == roomId)
+    session.close()
 
     # return a row object not tuples -
     # convert to dict
@@ -118,11 +131,16 @@ def setResults():
     if not row:
         return "room ID not valid", 404
 
-    if int(row[0]['current_size']) == 0:
-        return 'Room is full', 401
+    # if row[0]['current_size'] == row[0]['max_size']:
+    #     return 'Room is full', 401
+    print(res)
+    session = session_factory()
+    newData = ''
+    for place in restaurants:
+        newData += DATA_ENCODE_SYMBOL + place
 
     session.query(Room).where(Room.url == roomId).update(
-        {"current_size": Room.current_size - 1, Room.data:  DATA_ENCODE_SYMBOL.join(restaurants)})
+        {"current_size": Room.current_size + 1, Room.data:  Room.data + newData})
 
     session.commit()
     session.close()

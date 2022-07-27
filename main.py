@@ -1,3 +1,4 @@
+from concurrent.futures import thread
 from flask import Flask
 from api import api
 import os
@@ -23,8 +24,8 @@ def init_db():
     if os.path.isfile(DB_FILENAME):
         return
     session = session_factory()
-    start_data = Room("cbatest", 23, 12, "test-data")
-    extra_data = Room("abctest", 323, 0, "2nd-test")
+    start_data = Room("cbatest", 23, 12, "test-data", 0)
+    extra_data = Room("abctest", 323, 0, "2nd-test", 0)
     session.add(start_data)
     session.add(extra_data)
     session.commit()
@@ -33,4 +34,4 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    app.run(threaded=True)

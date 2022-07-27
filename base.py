@@ -4,7 +4,8 @@ from sqlalchemy.orm import sessionmaker
 
 DB_FILENAME = "Userdata.db"
 
-engine = create_engine('sqlite:///' + DB_FILENAME)
+engine = create_engine('sqlite:///' + DB_FILENAME,
+                       connect_args={'check_same_thread': False})
 # use session_factory() to get a new Session
 _SessionFactory = sessionmaker(bind=engine)
 
