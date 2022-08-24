@@ -24,6 +24,7 @@ def init_db():
     if os.path.isfile(DB_FILENAME):
         return
     session = session_factory()
+    # Inital Data
     start_data = Room("cbatest", 23, 12, "test-data", 0)
     extra_data = Room("abctest", 323, 0, "2nd-test", 0)
     session.add(start_data)

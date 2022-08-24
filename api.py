@@ -45,7 +45,7 @@ def generate():
 
     if roomSize > 4 or roomSize < 1:
         return 'size out of range', 400
-
+    # Only return a 7 char  UUID
     roomId = str(uuid.uuid4())[:7]
 
     session = session_factory()
