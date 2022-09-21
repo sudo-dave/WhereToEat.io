@@ -36,18 +36,23 @@ const Room = (props) => {
   const handleSubmit = (e) => {
     // Do some input validation
     e.preventDefault();
+    const input_restaurants = Object.values(inputs);
 
+    if (!input_restaurants.join("")) {
+      alert("Input at least one restaurant");
+      return;
+    }
     setDisabled(!disabled);
-    const total = Object.values(inputs);
 
     if (props.solo) {
-      const randNum = Math.floor(Math.random() * total.length);
-      setWinner(total[randNum]);
+      console.dir(inputs);
+      const randNum = Math.floor(Math.random() * input_restaurants.length);
+      setWinner(input_restaurants[randNum]);
       return;
     }
     options["body"] = JSON.stringify({
       roomID: props.roomID,
-      restaurants: total,
+      restaurants: input_restaurants,
     });
 
     (async () => {
@@ -79,7 +84,7 @@ const Room = (props) => {
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Restaurant / Food One</span>
+                  <span className="label-text">Restaurant Name:</span>
                 </label>
                 <input
                   type="text"
@@ -93,7 +98,7 @@ const Room = (props) => {
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Restaurant / Food Two</span>
+                  <span className="label-text">Restaurant Name:</span>
                 </label>
                 <input
                   type="text"
@@ -106,7 +111,7 @@ const Room = (props) => {
                 />
 
                 <label className="label">
-                  <span className="label-text">Restaurant / Food Three</span>
+                  <span className="label-text">Restaurant Name:</span>
                 </label>
                 <input
                   type="text"
@@ -118,7 +123,7 @@ const Room = (props) => {
                   className="input input-bordered"
                 />
                 <label className="label">
-                  <span className="label-text">Restaurant / Food Four</span>
+                  <span className="label-text">Restaurant Name:</span>
                 </label>
                 <input
                   type="text"
