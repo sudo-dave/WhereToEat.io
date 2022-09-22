@@ -25,7 +25,9 @@ def init_db():
         return
     session = session_factory()
     # Inital Data
-    start_data = Room("cbatest", 23, 12, "test-data", 0)
+    # ROOM(url, ROOMsizse,currentSize,data,done? )
+    # start_data = Room("cbatest", 23, 12, "test-data", 0)
+    start_data = Room("cbatest", 23, 23, "test@data", 0)
     extra_data = Room("abctest", 323, 0, "2nd-test", 0)
     session.add(start_data)
     session.add(extra_data)
