@@ -39,7 +39,7 @@ const Room = (props) => {
     const input_restaurants = Object.values(inputs);
 
     if (!input_restaurants.join("")) {
-      alert("Input at least one restaurant");
+      alert("Submit at least one restaurant");
       return;
     }
     setDisabled(!disabled);
